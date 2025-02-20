@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
             queue.push({ name, link, played: false });
             localStorage.setItem('queue', JSON.stringify(queue));
             submissionForm.reset();
+            alert("Submission successful!");
         });
     }
 });
@@ -43,9 +44,11 @@ function clearQueue() {
 }
 
 function checkPassword() {
-    const password = prompt("Enter Manager Password:");
-    if (password !== "manager123") {
-        alert("Access Denied");
-        window.location.href = "index.html";
-    }
+    setTimeout(() => {
+        const password = prompt("Enter Manager Password:");
+        if (password !== "manager123") {
+            alert("Access Denied");
+            window.location.href = "index.html";
+        }
+    }, 100);
 }
