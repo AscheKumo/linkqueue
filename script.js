@@ -1,36 +1,55 @@
 <!-- script.js -->
+let queue = JSON.parse(localStorage.getItem('queue')) || [];
+
 document.addEventListener('DOMContentLoaded', function () {
     const submissionForm = document.getElementById('submissionForm');
     if (submissionForm) {
-        submissionForm.addEventListener('submit', async function (e) {
+        submissionForm.addEventListener('submit', function (e) {
             e.preventDefault();
             const name = document.getElementById('name').value;
             const link = document.getElementById('link').value;
-            await db.collection('queue').add({ name, link, played: false });
+            queue.push({ name, link, played: false });
+            localStorage.setItem('queue', JSON.stringify(queue));
             submissionForm.reset();
         });
     }
 
     const queueList = document.getElementById('queueList');
     if (queueList) {
-        db.collection('queue').where("played", "==", false).onSnapshot(snapshot => {
-            queueList.innerHTML = '';
-            snapshot.forEach(doc => {
-                const data = doc.data();
-                const li = document.createElement('li');
-                li.innerHTML = `${data.name}: <a href="${data.link}" target="_blank">${data.link}</a> ` +
-                    `<button onclick="markPlayed('${doc.id}')">Mark as Played</button>`;
-                queueList.appendChild(li);
-            });
-        });
+        updateQueueUI();
     }
 });
 
-async function markPlayed(id) {
-    await db.collection('queue').doc(id).update({ played: true });
+function updateQueueUI() {
+    const queueList = document.getElementById('queueList');
+    if (!queueList) return;
+    queueList.innerHTML = '';
+    queue.forEach((entry, index) => {
+        if (!entry.played) {
+            const li = document.createElement('li');
+            li.innerHTML = `${entry.name}: <a href="${entry.link}" target="_blank">${entry.link}</a> ` +
+                `<button onclick="markPlayed(${index})">Mark as Played</button>`;
+            queueList.appendChild(li);
+        }
+    });
 }
 
-async function clearQueue() {
-    const snapshot = await db.collection('queue').get();
-    snapshot.forEach(doc => db.collection('queue').doc(doc.id).delete());
+function markPlayed(index) {
+    queue[index].played = true;
+    localStorage.setItem('queue', JSON.stringify(queue));
+    updateQueueUI();
+}
+
+function clearQueue() {
+    queue = [];
+    localStorage.setItem('queue', JSON.stringify(queue));
+    updateQueueUI();
+}
+
+function checkPassword() {
+    const password = prompt("Enter Manager Password:");
+    if (password !== "manager123") {
+        alert("Access Denied");
+        window.location.href = "index.html";
+    }
 }
