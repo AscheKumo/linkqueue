@@ -31,15 +31,40 @@
   <h1>Queue Manager</h1>
   <ul id="queueList"></ul>
   <script>
-    var managerPassword = "steelegangornogang"; // change if needed
-    var password = prompt("Enter manager password:");
-    if (password !== managerPassword) {
-      alert("Incorrect password!");
-      window.location.href = "index.html";
-    } else {
-      loadQueue();
+    // Hardcoded manager password – change as needed
+    var managerPassword = "yourpassword";
+    
+    // Function to check if a valid login timestamp exists
+    function isLoggedIn() {
+      const loginTime = localStorage.getItem("managerLoginTime");
+      if (!loginTime) return false;
+      const loginTimestamp = parseInt(loginTime, 10);
+      const now = Date.now();
+      const oneDay = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+      return (now - loginTimestamp < oneDay);
     }
     
+    // Function to require login if not already logged in
+    function requireLogin() {
+      if (isLoggedIn()) {
+        loadQueue();
+      } else {
+        const password = prompt("Enter manager password:");
+        if (password === managerPassword) {
+          // Store the current time as the login timestamp
+          localStorage.setItem("managerLoginTime", Date.now().toString());
+          loadQueue();
+        } else {
+          alert("Incorrect password!");
+          window.location.href = "index.html";
+        }
+      }
+    }
+    
+    // Call requireLogin on page load
+    requireLogin();
+    
+    // Function to load and display the queue
     function loadQueue() {
       db.collection("queue")
         .where("played", "==", false)
@@ -61,11 +86,10 @@
               var btn = document.createElement("button");
               btn.textContent = "Mark as Played";
               btn.onclick = function() {
-                db.collection("queue").doc(doc.id).update({
-                  played: true
-                }).catch(function(error) {
-                  console.error("Error updating document: ", error);
-                });
+                db.collection("queue").doc(doc.id).update({ played: true })
+                  .catch(function(error) {
+                    console.error("Error updating document: ", error);
+                  });
               };
               li.appendChild(btn);
               list.appendChild(li);
