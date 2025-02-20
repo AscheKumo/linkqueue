@@ -31,8 +31,7 @@
   <h1>Queue Manager</h1>
   <ul id="queueList"></ul>
   <script>
-    // Hardcoded manager password – change this to your chosen password
-    var managerPassword = "yourpassword";
+    var managerPassword = "yourpassword"; // change if needed
     var password = prompt("Enter manager password:");
     if (password !== managerPassword) {
       alert("Incorrect password!");
@@ -42,34 +41,41 @@
     }
     
     function loadQueue() {
-      // Query the "queue" collection for items that haven't been played
       db.collection("queue")
         .where("played", "==", false)
         .orderBy("timestamp")
-        .onSnapshot(function(querySnapshot) {
-          var list = document.getElementById("queueList");
-          list.innerHTML = "";
-          if(querySnapshot.empty) {
-            list.innerHTML = "<li>No items in the queue.</li>";
+        .onSnapshot(
+          function(querySnapshot) {
+            var list = document.getElementById("queueList");
+            list.innerHTML = "";
+            if(querySnapshot.empty) {
+              list.innerHTML = "<li>No items in the queue.</li>";
+              return;
+            }
+            querySnapshot.forEach(function(doc) {
+              var item = doc.data();
+              var li = document.createElement("li");
+              li.innerHTML = `<strong>${item.username}</strong> submitted: 
+                              <a href="${item.link}" target="_blank">${item.link}</a><br>
+                              <small>${item.timestamp ? item.timestamp.toDate().toLocaleString() : "Pending..."}</small>`;
+              var btn = document.createElement("button");
+              btn.textContent = "Mark as Played";
+              btn.onclick = function() {
+                db.collection("queue").doc(doc.id).update({
+                  played: true
+                }).catch(function(error) {
+                  console.error("Error updating document: ", error);
+                });
+              };
+              li.appendChild(btn);
+              list.appendChild(li);
+            });
+          },
+          function(error) {
+            console.error("Error loading queue:", error);
+            alert("Error loading queue. Check console for details.");
           }
-          querySnapshot.forEach(function(doc) {
-            var item = doc.data();
-            var li = document.createElement("li");
-            li.innerHTML = `<strong>${item.username}</strong> submitted: <a href="${item.link}" target="_blank">${item.link}</a><br>
-                            <small>${item.timestamp ? item.timestamp.toDate().toLocaleString() : "Pending..."}</small>`;
-            var btn = document.createElement("button");
-            btn.textContent = "Mark as Played";
-            btn.onclick = function() {
-              db.collection("queue").doc(doc.id).update({
-                played: true
-              }).catch(function(error) {
-                console.error("Error updating document: ", error);
-              });
-            };
-            li.appendChild(btn);
-            list.appendChild(li);
-          });
-        });
+        );
     }
   </script>
 </body>
