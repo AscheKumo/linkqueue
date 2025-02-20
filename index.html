@@ -1,20 +1,59 @@
-<!-- index.html - Public submission page -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stream Queue Submission</title>
-    <script defer src="script.js"></script>
+  <meta charset="UTF-8">
+  <title>Submit a Link</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    form { max-width: 400px; margin: auto; }
+    input, button { display: block; width: 100%; margin: 10px 0; padding: 10px; }
+  </style>
+  <!-- Firebase libraries -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+  <script>
+    // Replace with your Firebase project configuration
+    var firebaseConfig = {
+    apiKey: "AIzaSyArhtko72Apx37wxCrg5ebTJTKPT2cldVE",
+    authDomain: "linkqueue-c0ebd.firebaseapp.com",
+    projectId: "linkqueue-c0ebd",
+    storageBucket: "linkqueue-c0ebd.firebasestorage.app",
+    messagingSenderId: "952645301250",
+    appId: "1:952645301250:web:aa485153f1f0461612a31b",
+    measurementId: "G-N6JG5FCSTE"
+    };
+    firebase.initializeApp(firebaseConfig);
+    var db = firebase.firestore();
+  </script>
 </head>
 <body>
-    <h1>Submit Your Link for the Stream</h1>
-    <form id="submissionForm">
-        <input type="text" id="name" placeholder="Your Name" required>
-        <input type="url" id="link" placeholder="Link" required>
-        <button type="submit">Submit</button>
-    </form>
-    <p><a href="queue.html">Manager Queue (Restricted)</a></p>
+  <h1>Submit Your Link</h1>
+  <form id="submissionForm">
+    <input type="text" id="username" placeholder="Your Username" required>
+    <input type="url" id="link" placeholder="Link URL" required>
+    <button type="submit">Submit</button>
+  </form>
+  <script>
+    document.getElementById('submissionForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const username = document.getElementById('username').value;
+      const link = document.getElementById('link').value;
+      
+      // Add the new link to the "queue" collection
+      db.collection("queue").add({
+        username: username,
+        link: link,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        played: false
+      })
+      .then(function() {
+        alert("Link submitted!");
+        document.getElementById('submissionForm').reset();
+      })
+      .catch(function(error) {
+        console.error("Error adding document: ", error);
+      });
+    });
+  </script>
 </body>
 </html>
-
