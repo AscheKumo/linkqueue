@@ -5,6 +5,10 @@
   <title>Queue Manager</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
+    /* Global box-sizing */
+    * {
+      box-sizing: border-box;
+    }
     /* Dark Mode & Centered Layout */
     body {
       background-color: #121212;
@@ -47,13 +51,17 @@
       border: none;
       border-radius: 4px;
       padding: 10px 15px;
-      margin-top: 10px;
       cursor: pointer;
       font-weight: bold;
       transition: background-color 0.3s;
     }
     button:hover {
       background-color: #76c776;
+    }
+    /* Container for aligning the button to the right */
+    .button-container {
+      text-align: right;
+      margin-top: 10px;
     }
     @media (max-width: 600px) {
       li { padding: 10px; }
@@ -134,6 +142,8 @@
               li.innerHTML = `<strong>${item.username}</strong> submitted: 
                               <a href="${item.link}" target="_blank">${item.link}</a><br>
                               <small>${item.timestamp ? item.timestamp.toDate().toLocaleString() : "Pending..."}</small>`;
+              
+              // Create a container for the button aligned to the right
               var btn = document.createElement("button");
               btn.textContent = "Mark as Played";
               btn.onclick = function() {
@@ -142,7 +152,11 @@
                     console.error("Error updating document: ", error);
                   });
               };
-              li.appendChild(btn);
+              var btnContainer = document.createElement("div");
+              btnContainer.className = "button-container";
+              btnContainer.appendChild(btn);
+              li.appendChild(btnContainer);
+              
               list.appendChild(li);
             });
           },
