@@ -13,14 +13,10 @@ document.addEventListener('DOMContentLoaded', function () {
             submissionForm.reset();
         });
     }
-
-    const queueList = document.getElementById('queueList');
-    if (queueList) {
-        updateQueueUI();
-    }
 });
 
 function updateQueueUI() {
+    let queue = JSON.parse(localStorage.getItem('queue')) || [];
     const queueList = document.getElementById('queueList');
     if (!queueList) return;
     queueList.innerHTML = '';
@@ -35,14 +31,14 @@ function updateQueueUI() {
 }
 
 function markPlayed(index) {
+    let queue = JSON.parse(localStorage.getItem('queue')) || [];
     queue[index].played = true;
     localStorage.setItem('queue', JSON.stringify(queue));
     updateQueueUI();
 }
 
 function clearQueue() {
-    queue = [];
-    localStorage.setItem('queue', JSON.stringify(queue));
+    localStorage.setItem('queue', JSON.stringify([]));
     updateQueueUI();
 }
 
