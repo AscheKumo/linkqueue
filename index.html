@@ -5,21 +5,59 @@
   <title>Submit a Link</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    /* Global box-sizing so padding is included in width calculations */
+    /* Global box-sizing */
     * {
       box-sizing: border-box;
     }
-    /* Dark Mode & Centered Layout */
+    /* Container layout for sidebar and main content */
+    .container {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 20px;
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    /* Sidebar styling */
+    .sidebar {
+      background-color: #1e1e1e;
+      border-radius: 8px;
+      padding: 20px;
+      width: 220px;
+      min-width: 200px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    }
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .sidebar li {
+      margin-bottom: 15px;
+    }
+    .sidebar a {
+      color: #90EE90;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .sidebar a:hover {
+      text-decoration: underline;
+    }
+    /* Main content area */
+    .main-content {
+      flex: 1;
+      background-color: #121212;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    }
+    /* Global dark mode styling */
     body {
       background-color: #121212;
       color: #e0e0e0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       margin: 0;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
       padding: 20px;
     }
     h1 {
@@ -34,6 +72,7 @@
       box-shadow: 0 4px 6px rgba(0,0,0,0.3);
       width: 100%;
       max-width: 400px;
+      margin: 0 auto;
     }
     input, button {
       width: 100%;
@@ -60,8 +99,6 @@
     .manager-link {
       text-align: center;
       margin-top: 20px;
-      width: 100%;
-      max-width: 400px;
     }
     .manager-link a {
       color: #90EE90;
@@ -72,39 +109,59 @@
       text-decoration: underline;
     }
     @media (max-width: 600px) {
-      form { padding: 15px; }
-      input, button { padding: 10px; }
+      .container {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .sidebar, .main-content {
+        width: 100%;
+        max-width: none;
+      }
+      form {
+        max-width: none;
+      }
     }
   </style>
   <!-- Firebase libraries -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
   <script>
-    // Replace with your Firebase project configuration
+    // Firebase configuration
     var firebaseConfig = {
-    apiKey: "AIzaSyArhtko72Apx37wxCrg5ebTJTKPT2cldVE",
-    authDomain: "linkqueue-c0ebd.firebaseapp.com",
-    projectId: "linkqueue-c0ebd",
-    storageBucket: "linkqueue-c0ebd.firebasestorage.app",
-    messagingSenderId: "952645301250",
-    appId: "1:952645301250:web:aa485153f1f0461612a31b",
-    measurementId: "G-N6JG5FCSTE"
+      apiKey: "AIzaSyArhtko72Apx37wxCrg5ebTJTKPT2cldVE",
+      authDomain: "linkqueue-c0ebd.firebaseapp.com",
+      projectId: "linkqueue-c0ebd",
+      storageBucket: "linkqueue-c0ebd.firebasestorage.app",
+      messagingSenderId: "952645301250",
+      appId: "1:952645301250:web:aa485153f1f0461612a31b",
+      measurementId: "G-N6JG5FCSTE"
     };
     firebase.initializeApp(firebaseConfig);
     var db = firebase.firestore();
   </script>
 </head>
 <body>
-  <h1>Submit Your Link</h1>
-  <form id="submissionForm">
-    <input type="text" id="username" placeholder="Your Username" required>
-    <input type="url" id="link" placeholder="Link URL" required>
-    <button type="submit">Submit</button>
-  </form>
-  
-  <!-- Link to the manager page -->
-  <div class="manager-link">
-    <a href="manager.html">Manager Login</a>
+  <div class="container">
+    <nav class="sidebar">
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="manager.html">Manager</a></li>
+        <li><a href="https://www.twitch.tv/thesteelesmokinshow" target="_blank">Steele Smokin Show</a></li>
+      </ul>
+    </nav>
+    <div class="main-content">
+      <h1>Submit Your Link</h1>
+      <form id="submissionForm">
+        <input type="text" id="username" placeholder="Your Username" required>
+        <input type="url" id="link" placeholder="Link URL" required>
+        <button type="submit">Submit</button>
+      </form>
+      
+      <!-- Link to the manager page -->
+      <div class="manager-link">
+        <a href="manager.html">Manager Login</a>
+      </div>
+    </div>
   </div>
   
   <script>
