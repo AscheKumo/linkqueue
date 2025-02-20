@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Link Queue Tracker</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 600px; margin: auto; }
+        input, button { display: block; width: 100%; margin-top: 10px; padding: 10px; }
+        .queue-item { border: 1px solid #ccc; padding: 10px; margin: 10px 0; display: flex; justify-content: space-between; align-items: center; }
+        .played { background-color: #d3ffd3; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Submit a Link</h2>
+        <input type="text" id="name" placeholder="Your Name">
+        <input type="url" id="link" placeholder="Enter link" required>
+        <button onclick="submitLink()">Submit</button>
+        
+        <h2>Manager Queue</h2>
+        <div id="queue"></div>
+    </div>
+
+    <script>
+        function getQueue() {
+            return JSON.parse(localStorage.getItem('linkQueue')) || [];
+        }
+
+        function saveQueue(queue) {
+            localStorage.setItem('linkQueue', JSON.stringify(queue));
+        }
+
+        function submitLink() {
+            const name = document.getElementById('name').value.trim();
+            const link = document.getElementById('link').value.trim();
+            if (!name || !link) return alert("Please fill out both fields.");
+            
+            const queue = getQueue();
+            queue.push({ name, link, played: false });
+            saveQueue(queue);
+            document.getElementById('name').value = '';
+            document.getElementById('link').value = '';
+            renderQueue();
+        }
+
+        function markPlayed(index) {
+            const queue = getQueue();
+            queue[index].played = true;
+            saveQueue(queue);
+            renderQueue();
+        }
+
+        function renderQueue() {
+            const queue = getQueue();
+            const queueDiv = document.getElementById('queue');
+            queueDiv.innerHTML = '';
+            queue.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'queue-item' + (item.played ? ' played' : '');
+                div.innerHTML = `<span>${item.name}: <a href="${item.link}" target="_blank">${item.link}</a></span>`;
+                const button = document.createElement('button');
+                button.innerText = "Mark as Played";
+                button.onclick = () => markPlayed(index);
+                if (item.played) button.disabled = true;
+                div.appendChild(button);
+                queueDiv.appendChild(div);
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", renderQueue);
+    </script>
+</body>
+</html>
