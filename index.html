@@ -7,6 +7,7 @@
     body { font-family: Arial, sans-serif; margin: 20px; }
     form { max-width: 400px; margin: auto; }
     input, button { display: block; width: 100%; margin: 10px 0; padding: 10px; }
+    .manager-link { text-align: center; margin-top: 20px; }
   </style>
   <!-- Firebase libraries -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -14,13 +15,12 @@
   <script>
     // Replace with your Firebase project configuration
     var firebaseConfig = {
-    apiKey: "AIzaSyArhtko72Apx37wxCrg5ebTJTKPT2cldVE",
-    authDomain: "linkqueue-c0ebd.firebaseapp.com",
-    projectId: "linkqueue-c0ebd",
-    storageBucket: "linkqueue-c0ebd.firebasestorage.app",
-    messagingSenderId: "952645301250",
-    appId: "1:952645301250:web:aa485153f1f0461612a31b",
-    measurementId: "G-N6JG5FCSTE"
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT_ID.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
     };
     firebase.initializeApp(firebaseConfig);
     var db = firebase.firestore();
@@ -33,6 +33,12 @@
     <input type="url" id="link" placeholder="Link URL" required>
     <button type="submit">Submit</button>
   </form>
+  
+  <!-- Link to the manager page -->
+  <div class="manager-link">
+    <a href="manager.html">Manager Login</a>
+  </div>
+  
   <script>
     document.getElementById('submissionForm').addEventListener('submit', function(e) {
       e.preventDefault();
