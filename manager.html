@@ -18,8 +18,9 @@
       width: 100%;
       max-width: 1200px;
       margin: 0 auto;
+      padding: 20px;
     }
-    /* Sidebar styling */
+    /* Sidebar styling (identical to index.html) */
     .sidebar {
       background-color: #1e1e1e;
       border-radius: 8px;
@@ -58,7 +59,6 @@
       color: #e0e0e0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       margin: 0;
-      padding: 20px;
     }
     h1 {
       color: #90EE90;
@@ -133,6 +133,7 @@
 </head>
 <body>
   <div class="container">
+    <!-- Unified Sidebar -->
     <nav class="sidebar">
       <ul>
         <li><a href="index.html">Home</a></li>
@@ -140,6 +141,7 @@
         <li><a href="https://www.twitch.tv/thesteelesmokinshow" target="_blank">Steele Smokin Show</a></li>
       </ul>
     </nav>
+    <!-- Main Content -->
     <div class="main-content">
       <h1>Queue Manager</h1>
       <ul id="queueList"></ul>
@@ -149,24 +151,23 @@
     // Hardcoded manager password – change as needed
     var managerPassword = "yourpassword";
     
-    // Function to check if a valid login timestamp exists
+    // Check for a valid login timestamp
     function isLoggedIn() {
       const loginTime = localStorage.getItem("managerLoginTime");
       if (!loginTime) return false;
       const loginTimestamp = parseInt(loginTime, 10);
       const now = Date.now();
-      const oneDay = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+      const oneDay = 24 * 60 * 60 * 1000;
       return (now - loginTimestamp < oneDay);
     }
     
-    // Function to require login if not already logged in
+    // Require login if not already logged in
     function requireLogin() {
       if (isLoggedIn()) {
         loadQueue();
       } else {
         const password = prompt("Enter manager password:");
         if (password === managerPassword) {
-          // Store the current time as the login timestamp
           localStorage.setItem("managerLoginTime", Date.now().toString());
           loadQueue();
         } else {
@@ -176,10 +177,10 @@
       }
     }
     
-    // Call requireLogin on page load
+    // Call login on page load
     requireLogin();
     
-    // Function to load and display the queue
+    // Load and display the queue
     function loadQueue() {
       db.collection("queue")
         .where("played", "==", false)
@@ -199,7 +200,7 @@
                               <a href="${item.link}" target="_blank">${item.link}</a><br>
                               <small>${item.timestamp ? item.timestamp.toDate().toLocaleString() : "Pending..."}</small>`;
               
-              // Create a container for the button aligned to the right
+              // Right-align the button
               var btn = document.createElement("button");
               btn.textContent = "Mark as Played";
               btn.onclick = function() {
